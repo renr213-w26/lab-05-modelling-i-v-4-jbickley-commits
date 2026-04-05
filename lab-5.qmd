@@ -79,11 +79,24 @@ The Least Squares Regression Line is $$\hat{Y} = 7.2698731 - 0.592601X$$
 
 a.  Another researcher is interested in assessing the relationship between babies’ weights and mothers’ ages. Fit another linear model to investigate this relationship. Provide the summary output below.
 
+```{r}
+births_mage <- births |> filter(!is.na(mage))
+linear_reg() |> fit(weight ~ mage, data =births_mage) |> tidy()
+
+```
+
+
 b.  In 2-3 sentences, explain how the regression line to model these data is fit, i.e., based on what criteria R determines the regression line.
+
+The way R determines the line is to find the optimal line that minimizes the sum of square residuals. This makes the estimated regression line the line that is closest as possbile to representing the real data.
 
 c.  Interpret the intercept in the context of the data and the research question. Is the intercept meaningful in this context? Why or why not?
 
+No, the intercept is not very meaningful because there is no realistic estimate or any sample points where the mother's age is 0 which is what the intercept represents. 
+
 d.  Interpret the slope in the context of the data and the research question.
+
+For every additional year of age of the mother, on average, their babies weight is 0.0142428 LBS heavier. 
 
 # Part 2 - Parasites
 
