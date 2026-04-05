@@ -226,7 +226,27 @@ To answer this question, begin by fitting a linear regression model to each pair
 
 a.  Report the slopes for each of these models. Use proper notation.
 
+```{r}
+dt_model <- linear_reg() |>
+  fit(transformed_parsim ~ divergence_time, data = parasites)
+
+dist_model <- linear_reg() |>
+  fit(transformed_parsim ~ distance, data = parasites)
+
+BM_model <- linear_reg() |>
+  fit(transformed_parsim ~ BMdiff, data = parasites)
+
+prec_model <- linear_reg() |>
+  fit(transformed_parsim ~ precdiff, data = parasites)
+
+
+```
+The slopes of the models are the following:
+$$\beta_1(Divergence Time) = -0.09066 \\ \beta_1(distance)=0.000274 \\ \beta_1(BMdiff) = -5.044*10^{-6}\\ \beta_1(precdiff) = -0.006013$$
+
 b.  To answer the question of interest, would it be useful to compare the slopes in each model to choose the variable that is the strongest predictor of parasite similarity? Why or why not?
+
+There are some strengths and weaknesses, we can see for example that BMdiff is not a useful predictor as there is a wide range of BMdiff values but the parsim is not effected by them. However, all these measures have different units, without looking indepth we cannot really see which one predicts the model and we cannot see which one actually predicts best.
 
 ## Question 7
 
@@ -237,8 +257,21 @@ As you may have guessed from the name $R^2$ can be calculated by squaring the co
 You can calculate $R^2$ using the glance function. For example, you can calculate $R^2$ for `dt_model` using the code `glance(dt_model)$r.squared`.
 
 a.  Calculate and report $R^2$ for each model fit in the previous exercise.
+```{r}
+dt_r2   <- glance(dt_model)$r.squared
+dist_r2 <- glance(dist_model)$r.squared
+BM_r2   <- glance(BM_model)$r.squared
+prec_r2 <- glance(prec_model)$r.squared
+
+dt_r2
+dist_r2
+BM_r2
+prec_r2
+```
 
 b.  To answer our question of interest, would it be useful to compare the $R^2$ in each model to choose the variable that is the strongest predictor of parasite similarity? Why or why not?
+
+Yes, this is useful because it actually tells us which one is more correlated to the parsim. We can see that dt_model and dist_model are the best with the other 2 basically being irrelevant. 
 
 # Part 3 - GDP and life expectancy
 
