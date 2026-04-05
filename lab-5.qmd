@@ -1,6 +1,7 @@
 ---
 title: "Lab 5 - Modelling I"
 categories: "Lab"
+date: "April 5, 2026"
 ---
 
 # Introduction
@@ -25,6 +26,16 @@ Additionally, if you’re using functions that are not introduced in the course 
 Failure to cite outside resources used, including Large Language Models like Chat GPT, is a violation of the Duke Community Standard and will be treated as such.
 :::
 
+```{r}
+library(tidyverse)
+library(parsnip)
+library(broom)
+library(openintro)
+births <- births14
+
+```
+
+
 # Part 1 - Smoking during pregnancy
 
 ## Question 1
@@ -42,6 +53,27 @@ d.  Write the estimated least squares regression line below using proper notatio
     ::: callout-tip
     If you need to type an equation using proper notation, type your answers in-between `$$` and `$$`. You may use `\hat{example}` to put a hat on a character.
     :::
+
+```{r}
+births14_habitgiven <- births |> filter(!is.na(habit))
+```
+
+```{r}
+births14_habitgiven |>
+  ggplot(aes(weight, habit))+
+  geom_boxplot()+
+  labs(x = "Weight (LBS)",title = "Comparison of the Birthweight with Smoking vs Non-Smoking Mothers")
+```
+We can see that on average, the birth weight of babies who's mothers are smokers in lower, the lightest baby in the set was born to a smoker, and there is a higher IQR as well. In babies with non-smoking mothers the birth weight is on average higher and the heaviest baby was born to a nonsmoker.
+
+```{r}
+birth_fit <- linear_reg() |>
+  fit(weight ~ habit, data = births14_habitgiven)
+tidy(birth_fit)
+```
+Note: I needed to use ChatGPT to figure out what packages were needed to run this code that is in the notes; as it doesn't say.
+
+The Least Squares Regression Line is $$\hat{Y} = 7.2698731 - 0.592601X$$
 
 ## Question 2
 
