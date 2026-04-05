@@ -286,15 +286,36 @@ Tip
 </div>
 </div>
 <p>Note: I needed to use ChatGPT to figure out what packages were needed to run this code that is in the notes; as it doesn’t say.</p>
+<p>The Least Squares Regression Line is <span class="math display">\[\hat{Y} = 7.2698731 - 0.592601X\]</span></p>
 </section>
 <section id="question-2" class="level2">
 <h2 class="anchored" data-anchor-id="question-2">Question 2</h2>
 <ol type="a">
-<li><p>Another researcher is interested in assessing the relationship between babies’ weights and mothers’ ages. Fit another linear model to investigate this relationship. Provide the summary output below.</p></li>
-<li><p>In 2-3 sentences, explain how the regression line to model these data is fit, i.e., based on what criteria R determines the regression line.</p></li>
-<li><p>Interpret the intercept in the context of the data and the research question. Is the intercept meaningful in this context? Why or why not?</p></li>
-<li><p>Interpret the slope in the context of the data and the research question.</p></li>
+<li>Another researcher is interested in assessing the relationship between babies’ weights and mothers’ ages. Fit another linear model to investigate this relationship. Provide the summary output below.</li>
 </ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>births_mage <span class="ot">&lt;-</span> births <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(mage))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">|&gt;</span> <span class="fu">fit</span>(weight <span class="sc">~</span> mage, <span class="at">data =</span>births_mage) <span class="sc">|&gt;</span> <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  term        estimate std.error statistic   p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)   6.79     0.208       32.7  1.15e-159
+2 mage          0.0142   0.00717      1.99 4.72e-  2</code></pre>
+</div>
+</div>
+<ol start="2" type="a">
+<li>In 2-3 sentences, explain how the regression line to model these data is fit, i.e., based on what criteria R determines the regression line.</li>
+</ol>
+<p>The way R determines the line is to find the optimal line that minimizes the sum of square residuals. This makes the estimated regression line the line that is closest as possbile to representing the real data.</p>
+<ol start="3" type="a">
+<li>Interpret the intercept in the context of the data and the research question. Is the intercept meaningful in this context? Why or why not?</li>
+</ol>
+<p>No, the intercept is not very meaningful because there is no realistic estimate or any sample points where the mother’s age is 0 which is what the intercept represents.</p>
+<ol start="4" type="a">
+<li>Interpret the slope in the context of the data and the research question.</li>
+</ol>
+<p>For every additional year of age of the mother, on average, their babies weight is 0.0142428 LBS heavier.</p>
 </section>
 </section>
 <section id="part-2---parasites" class="level1">
@@ -316,21 +337,87 @@ Tip
 <h2 class="anchored" data-anchor-id="question-3">Question 3</h2>
 <p>Let’s start by reading in the <code>parasites</code> data and examining the relationship between <code>divergence_time</code> and <code>parsim</code>.</p>
 <ol type="a">
-<li><p>Load the data and save the data frame as <code>parasites</code>.</p></li>
-<li><p>Based on the goals of the analysis, what is the response variable?</p></li>
-<li><p>Visualize the relationship between the two variables.</p></li>
-<li><p>Use the visualization to describe the relationship between the two variables.</p></li>
+<li>Load the data and save the data frame as <code>parasites</code>.</li>
 </ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>parasites <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/parasites.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 595 Columns: 7
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (2): species1, species2
+dbl (5): divergence_time, distance, BMdiff, precdiff, parsim
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+<ol start="2" type="a">
+<li><p>Based on the goals of the analysis, what is the response variable? The Response Variable is Parsim</p></li>
+<li><p>Visualize the relationship between the two variables.</p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>parasites <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(divergence_time,parsim))<span class="sc">+</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Divergence Time vs Parasite Similarity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-5_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ol start="4" type="a">
+<li>Use the visualization to describe the relationship between the two variables.</li>
+</ol>
+<p>On average species with higher divergence time have lower parasite similarity. We also see at any given divergence time there is a wide range and likely due to measurements they are clustered around the same divergence time.</p>
 </section>
 <section id="question-4" class="level2">
 <h2 class="anchored" data-anchor-id="question-4">Question 4</h2>
 <p>Next, model this relationship.</p>
 <ol type="a">
-<li><p>Fit the model and write the estimated regression equation.</p></li>
-<li><p>Interpret the slope and the intercept in the context of the data.</p></li>
-<li><p>Recreate the visualization from Question 3, this time adding a regression line to the visualization.</p></li>
-<li><p>What do you notice about the prediction (regression) line that may be strange, particularly for very large divergence times?</p></li>
+<li>Fit the model and write the estimated regression equation.</li>
 </ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">|&gt;</span> <span class="fu">fit</span>(parsim <span class="sc">~</span> divergence_time, <span class="at">data =</span>parasites) <span class="sc">|&gt;</span> <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  term            estimate std.error statistic   p.value
+  &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)      0.379    0.0121        31.4 4.59e-128
+2 divergence_time -0.00653  0.000312     -20.9 2.70e- 73</code></pre>
+</div>
+</div>
+<ol start="2" type="a">
+<li>Interpret the slope and the intercept in the context of the data.</li>
+</ol>
+<p>The Intercept tells us that with divergence time of 0, the parsim is on average 0.3794 which is not massivley meaningful because there is no time for divergence. The Slope of -0.006531791 tellus us that for every million years there is a a decrease 0f -0.006531 of similarity.</p>
+<ol start="3" type="a">
+<li>Recreate the visualization from Question 3, this time adding a regression line to the visualization.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>parasites <span class="sc">|&gt;</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(divergence_time,parsim))<span class="sc">+</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,<span class="at">se =</span> <span class="cn">FALSE</span>)<span class="sc">+</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Divergence Time vs Parasite Similarity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-5_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ol start="4" type="a">
+<li>What do you notice about the prediction (regression) line that may be strange, particularly for very large divergence times?</li>
+</ol>
+<p>It is strange for large divergence times because it is not even close to the data points for the divergence times &gt;60M Years, they are All above the regression line, making it not very accurate for those times.</p>
 </section>
 <section id="question-5" class="level2">
 <h2 class="anchored" data-anchor-id="question-5">Question 5</h2>
@@ -350,9 +437,30 @@ Note
 <p><code>log()</code> in R represents the <strong>nautral log</strong>.</p>
 </div>
 </div></li>
-<li><p>Then, visualize the relationship between divergence_time and <code>transformed_parsim</code>. Add a regression line to your visualization.</p></li>
-<li><p>Write a 1-2 sentence description of what you observe in the visualization.</p></li>
 </ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>parasites <span class="ot">&lt;-</span> parasites <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">transformed_parsim =</span> <span class="fu">log</span>(parsim<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>parsim)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="2" type="a">
+<li>Then, visualize the relationship between divergence_time and <code>transformed_parsim</code>. Add a regression line to your visualization.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>parasites <span class="sc">|&gt;</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(divergence_time,transformed_parsim))<span class="sc">+</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Divergence Time vs Transformed Parasite Similarity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-5_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ol start="3" type="a">
+<li>Write a 1-2 sentence description of what you observe in the visualization.</li>
+</ol>
+<p>In comparison to the previous section, there are much larger noimal ranges of parasite similarity, however the appear to be more clustered together. It also appears that they move in a more linear fashion, espeically at the higher divergence times.</p>
 </section>
 <section id="question-6" class="level2">
 <h2 class="anchored" data-anchor-id="question-6">Question 6</h2>

@@ -127,12 +127,32 @@ The data are available in `parasites.csv` in your `data` folder.
 Let’s start by reading in the `parasites` data and examining the relationship between `divergence_time` and `parsim`.
 
 a.  Load the data and save the data frame as `parasites`.
+```{r}
+
+
+parasites <- read_csv("data/parasites.csv")
+
+
+```
+
 
 b.  Based on the goals of the analysis, what is the response variable?
+The Response Variable is Parsim
 
 c.  Visualize the relationship between the two variables.
+```{r}
+parasites |>
+  ggplot(aes(divergence_time,parsim))+
+  geom_point()+
+  labs(title = "Divergence Time vs Parasite Similarity")
+```
+
+
 
 d.  Use the visualization to describe the relationship between the two variables.
+
+On average species with higher divergence time have lower parasite similarity. We also see at any given divergence time there is a wide range and likely due to measurements they are clustered around the same divergence time.
+
 
 ## Question 4
 
@@ -140,25 +160,55 @@ Next, model this relationship.
 
 a.  Fit the model and write the estimated regression equation.
 
+```{r}
+linear_reg() |> fit(parsim ~ divergence_time, data =parasites) |> tidy()
+
+```
+
+
 b.  Interpret the slope and the intercept in the context of the data.
+
+The Intercept tells us that with divergence time of 0, the parsim is on average 0.3794 which is not massivley meaningful because there is no time for divergence. The Slope of -0.006531791 tellus us that for every million years there is a a decrease 0f -0.006531 of similarity.
 
 c.  Recreate the visualization from Question 3, this time adding a regression line to the visualization.
 
+```{r}
+parasites |>
+  ggplot(aes(divergence_time,parsim))+
+  geom_point()+
+  geom_smooth(method = "lm",se = FALSE)+
+  labs(title = "Divergence Time vs Parasite Similarity")
+```
+
 d.  What do you notice about the prediction (regression) line that may be strange, particularly for very large divergence times?
+
+It is strange for large divergence times because it is not even close to the data points for the divergence times >60M Years, they are All above the regression line, making it not very accurate for those times.
 
 ## Question 5
 
 Since `parsim` takes values between 0 and 1, we want to transform this variable so that it can range between (−∞,+∞). This will be better suited for fitting a regression model (and interpreting predicted values!)
+
+
 
 a.  Using mutate, create a new variable `transformed_parsim` that is calculated as `log(parsim/(1-parsim))`. Add this variable to your data frame.
 
     ::: callout-note
     `log()` in R represents the **nautral log**.
     :::
+```{r}
+parasites <- parasites |> mutate(transformed_parsim = log(parsim/(1-parsim)))
+```
 
 b.  Then, visualize the relationship between divergence_time and `transformed_parsim`. Add a regression line to your visualization.
-
+```{r}
+parasites |>
+  ggplot(aes(divergence_time,transformed_parsim))+
+  geom_point()+
+  labs(title = "Divergence Time vs Transformed Parasite Similarity")
+```
 c.  Write a 1-2 sentence description of what you observe in the visualization.
+
+In comparison to the previous section, there are much larger noimal ranges of parasite similarity, however the appear to be more clustered together. It also appears that they move in a more linear fashion, espeically at the higher divergence times. 
 
 ## Question 6
 
