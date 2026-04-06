@@ -2,6 +2,7 @@
 title: "Lab 5 - Modelling I"
 categories: "Lab"
 date: "April 5, 2026"
+format: pdf
 ---
 
 # Introduction
@@ -276,6 +277,10 @@ Yes, this is useful because it actually tells us which one is more correlated to
 # Part 3 - GDP and life expectancy
 
 Gapminder is a “fact tank” that uses publicly available world data to produce data visualizations and teaching resources on global development. We will use an excerpt of their data to explore relationships among world health metrics across countries and regions between the years 1952 and 2007. The data set is called `gapminder`, from the **gapminder** package. A table of variables can be found below.
+```{r}
+library(gapminder)
+gapminder <- gapminder
+```
 
 -   `country`: The country name
 
@@ -293,6 +298,11 @@ Gapminder is a “fact tank” that uses publicly available world data to produc
 
 a.  **Data:** For our analysis, we will only be working with data from 2007. Below, filter the data set so only values from the year 2007 are shown. Save this data set as `gapminder_07` and use it for the remainder of this exercise and the following.
 
+```{r}
+gapminder_07 <- gapminder |> filter(year == 2007)
+```
+
+
 b.  **Visualization:** We are interested in learning more about GDP, and we’ll start with exploring the relationship between life expectancy and GDP. Create two visualizations:
 
     -   Scatter plot of `gdpPercap` vs. `lifeExp`.
@@ -300,22 +310,50 @@ b.  **Visualization:** We are interested in learning more about GDP, and we’ll
     -   Scatter plot of `gdpPercap_log` vs. `lifeExp`, where `gdpPercap_log` is a new variable you add to the data set by taking the natural log of `gdpPercap`.
 
     First describe the relationship between each pair of the variables. Then, comment on which relationship would be better modeled using a linear model, and explain your reasoning.
+    
+```{r}
+gapminder_07 |> ggplot(aes(gdpPercap,lifeExp)) + 
+  geom_point()
+gapminder_07 |> ggplot(aes(log(gdpPercap),lifeExp)) + 
+  geom_point()
+```
 
+It is very clear that the true model of the gdpPercap vs. lifeExp. is not linear, so it is not going to be well fit by a linear model. We should model the log(gdpPerCap) using a linear mode. The gdpPercap vs lifeexp looks like a log function. 
 c.  **Model fitting:**
 
     -   Fit a linear model predicting log gross domestic product from life expectancy. Display the tidy summary.
+
+```{r}
+loggdp_model <- linear_reg() |>
+  fit(log(gdpPercap) ~ lifeExp, data = gapminder_07)
+tidy(loggdp_model)
+```
 
 d.  **Model evaluation:**
 
     -   Calculate the R-squared of the model using two methods and confirm that the values match: first method is using `glance()` and the other method is based on the value of the correlation coefficient between the two variables.
 
     -   Interpret R-squared in the context of the data and the research question.
+```{r}
+glance(loggdp_model)$r.squared
+lingdp_model <- linear_reg() |>
+fit(gdpPercap ~ lifeExp , data = gapminder_07)
+glance(lingdp_model)$r.squared
+
+```
+A much higher percentage (65.4%) of the life expectancy is explained by loggdp when compared to just gdpPercap (46.1%). 
 
 ## Question 9
 
 Next, we want to examine if the relationship between GDP and life expectancy that we observed in the previous exercise holds across all continents in our data. We’ll continue to work with logged GDP (`gdpPercap_log`) and data from 2007.
 
 a.  **Justification:** Create a scatter plot of `gdpPercap_log` vs. `lifeExp`, where the points are colored by `continent`. Do you think the trend between `gdpPercap_log` and `lifeExp` is different for different continents? Justify your answer with specific features of the plot.
+```{r}
+gapminder_07 |> ggplot(aes(log(gdpPercap),lifeExp, color = continent)) + 
+  geom_point()
+```
+For the most part the trend appears to be homogeneous between continents, we can see for larger log(gdpPerCap's) that are equated to very similar life capacities regardless of continent. However, there is one clear outlier, Africa where the trand is very different which we can see the number of outlines with large log gdp per capita but relatively small life expectancy. 
+
 
 b.  **Model fitting and interpretation:**
 
@@ -324,9 +362,23 @@ b.  **Model fitting and interpretation:**
     -   Interpret the *intercept* of the model, making sure that your interpretation is in the units of the original data (not on log scale).
 
     -   Interpret the *slope* of the model, making sure that your interpretation is in the units of the original data (not on log scale).
+```{r}
+add_model <- linear_reg() |>
+  fit(log(gdpPercap) ~ lifeExp + continent, data = gapminder_07)
+
+tidy(add_model)
+
+```
+
+The intercept of 3.2048  tells us the country with No life expectancy (0 Years) is likely to have a log GDP of 3.2048. 0.0781 tells us that there are is an increase of log GDP of 0.0781 for every year of life expectancy. For each continent we add their slope estimate when the country is in that continent. 
 
 c.  **Prediction:** Predict the GDP of a country in Asia where the average life expectancy is 70 years old.
 
+We do $$3.20484 + 70 * (0.07812444) + 0.01028999$$
+```{r}
+exp(3.20484 + 70 * (0.07812444) + 0.01028999)
+```
+So the GDP is $5906.689M Estimate.
 ## Question 10
 
 Communication is a critical yet often overlooked part of data science. When we engage with our audience and capture their interest, we can ultimately better communicate what we are trying to share.
@@ -342,6 +394,8 @@ Then, write a paragraph (4-5 sentences) addressing the following:
 -   What are your general take-aways from this presentation?
 
 -   What are your general take-aways from how this presentation was given?
+
+Generally, a key take-away is that it is very important that you present data in a way that can be easily understood and is visually interesting. The animation is a highly interesting way and likely to encourage people to pay attention to the data. However, some aspects of the presentation are hard to follow as it moves very fast and it can hard to see with that background, it would likely be better if it was not shown in a real space but with solid background; also the scales are somewhat problematic. Furthermore, I believe that they were trying to show too many different things at once to follow.
 
 # Wrap-up
 

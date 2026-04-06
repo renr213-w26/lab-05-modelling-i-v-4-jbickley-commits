@@ -473,9 +473,26 @@ Note
 <li><p><code>precdiff</code> and <code>transformed_parsim</code></p></li>
 </ul>
 <ol type="a">
-<li><p>Report the slopes for each of these models. Use proper notation.</p></li>
-<li><p>To answer the question of interest, would it be useful to compare the slopes in each model to choose the variable that is the strongest predictor of parasite similarity? Why or why not?</p></li>
+<li>Report the slopes for each of these models. Use proper notation.</li>
 </ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>dt_model <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">|&gt;</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(transformed_parsim <span class="sc">~</span> divergence_time, <span class="at">data =</span> parasites)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>dist_model <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">|&gt;</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(transformed_parsim <span class="sc">~</span> distance, <span class="at">data =</span> parasites)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>BM_model <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">|&gt;</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(transformed_parsim <span class="sc">~</span> BMdiff, <span class="at">data =</span> parasites)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>prec_model <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">|&gt;</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(transformed_parsim <span class="sc">~</span> precdiff, <span class="at">data =</span> parasites)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The slopes of the models are the following: <span class="math display">\[\beta_1(Divergence Time) = -0.09066 \\ \beta_1(distance)=0.000274 \\ \beta_1(BMdiff) = -5.044*10^{-6}\\ \beta_1(precdiff) = -0.006013\]</span></p>
+<ol start="2" type="a">
+<li>To answer the question of interest, would it be useful to compare the slopes in each model to choose the variable that is the strongest predictor of parasite similarity? Why or why not?</li>
+</ol>
+<p>There are some strengths and weaknesses, we can see for example that BMdiff is not a useful predictor as there is a wide range of BMdiff values but the parsim is not effected by them. However, all these measures have different units, without looking indepth we cannot really see which one predicts the model and we cannot see which one actually predicts best.</p>
 </section>
 <section id="question-7" class="level2">
 <h2 class="anchored" data-anchor-id="question-7">Question 7</h2>
@@ -483,14 +500,47 @@ Note
 <p>As you may have guessed from the name <span class="math inline">\(R^2\)</span> can be calculated by squaring the correlation when we have a simple linear regression model. The correlation r takes values -1 to 1, therefore, <span class="math inline">\(R^2\)</span> takes values 0 to 1. Intuitively, if r=1 or −1, then <span class="math inline">\(R^2\)</span>=1, indicating the model is a perfect fit for the data. If r≈0 then <span class="math inline">\(R^2\)</span>≈0, indicating the model is a very bad fit for the data.</p>
 <p>You can calculate <span class="math inline">\(R^2\)</span> using the glance function. For example, you can calculate <span class="math inline">\(R^2\)</span> for <code>dt_model</code> using the code <code>glance(dt_model)$r.squared</code>.</p>
 <ol type="a">
-<li><p>Calculate and report <span class="math inline">\(R^2\)</span> for each model fit in the previous exercise.</p></li>
-<li><p>To answer our question of interest, would it be useful to compare the <span class="math inline">\(R^2\)</span> in each model to choose the variable that is the strongest predictor of parasite similarity? Why or why not?</p></li>
+<li>Calculate and report <span class="math inline">\(R^2\)</span> for each model fit in the previous exercise.</li>
 </ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>dt_r2   <span class="ot">&lt;-</span> <span class="fu">glance</span>(dt_model)<span class="sc">$</span>r.squared</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>dist_r2 <span class="ot">&lt;-</span> <span class="fu">glance</span>(dist_model)<span class="sc">$</span>r.squared</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>BM_r2   <span class="ot">&lt;-</span> <span class="fu">glance</span>(BM_model)<span class="sc">$</span>r.squared</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>prec_r2 <span class="ot">&lt;-</span> <span class="fu">glance</span>(prec_model)<span class="sc">$</span>r.squared</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>dt_r2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5125147</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>dist_r2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4432029</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>BM_r2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.003269571</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>prec_r2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.008611603</code></pre>
+</div>
+</div>
+<ol start="2" type="a">
+<li>To answer our question of interest, would it be useful to compare the <span class="math inline">\(R^2\)</span> in each model to choose the variable that is the strongest predictor of parasite similarity? Why or why not?</li>
+</ol>
+<p>Yes, this is useful because it actually tells us which one is more correlated to the parsim. We can see that dt_model and dist_model are the best with the other 2 basically being irrelevant.</p>
 </section>
 </section>
 <section id="part-3---gdp-and-life-expectancy" class="level1">
 <h1>Part 3 - GDP and life expectancy</h1>
 <p>Gapminder is a “fact tank” that uses publicly available world data to produce data visualizations and teaching resources on global development. We will use an excerpt of their data to explore relationships among world health metrics across countries and regions between the years 1952 and 2007. The data set is called <code>gapminder</code>, from the <strong>gapminder</strong> package. A table of variables can be found below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gapminder)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'gapminder' was built under R version 4.5.3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="ot">&lt;-</span> gapminder</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <ul>
 <li><p><code>country</code>: The country name</p></li>
 <li><p><code>continent</code>: The continent name</p></li>
@@ -502,40 +552,129 @@ Note
 <section id="question-8" class="level2">
 <h2 class="anchored" data-anchor-id="question-8">Question 8</h2>
 <ol type="a">
-<li><p><strong>Data:</strong> For our analysis, we will only be working with data from 2007. Below, filter the data set so only values from the year 2007 are shown. Save this data set as <code>gapminder_07</code> and use it for the remainder of this exercise and the following.</p></li>
+<li><strong>Data:</strong> For our analysis, we will only be working with data from 2007. Below, filter the data set so only values from the year 2007 are shown. Save this data set as <code>gapminder_07</code> and use it for the remainder of this exercise and the following.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>gapminder_07 <span class="ot">&lt;-</span> gapminder <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2007</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="2" type="a">
 <li><p><strong>Visualization:</strong> We are interested in learning more about GDP, and we’ll start with exploring the relationship between life expectancy and GDP. Create two visualizations:</p>
 <ul>
 <li><p>Scatter plot of <code>gdpPercap</code> vs.&nbsp;<code>lifeExp</code>.</p></li>
 <li><p>Scatter plot of <code>gdpPercap_log</code> vs.&nbsp;<code>lifeExp</code>, where <code>gdpPercap_log</code> is a new variable you add to the data set by taking the natural log of <code>gdpPercap</code>.</p></li>
 </ul>
 <p>First describe the relationship between each pair of the variables. Then, comment on which relationship would be better modeled using a linear model, and explain your reasoning.</p></li>
-<li><p><strong>Model fitting:</strong></p>
-<ul>
-<li>Fit a linear model predicting log gross domestic product from life expectancy. Display the tidy summary.</li>
-</ul></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>gapminder_07 <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(gdpPercap,lifeExp)) <span class="sc">+</span> </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-5_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>gapminder_07 <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">log</span>(gdpPercap),lifeExp)) <span class="sc">+</span> </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-5_files/figure-html/unnamed-chunk-16-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It is very clear that the true model of the gdpPercap vs.&nbsp;lifeExp. is not linear, so it is not going to be well fit by a linear model. We should model the log(gdpPerCap) using a linear mode. The gdpPercap vs lifeexp looks like a log function. c.&nbsp;<strong>Model fitting:</strong></p>
+<pre><code>-   Fit a linear model predicting log gross domestic product from life expectancy. Display the tidy summary.</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>loggdp_model <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">|&gt;</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="fu">log</span>(gdpPercap) <span class="sc">~</span> lifeExp, <span class="at">data =</span> gapminder_07)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(loggdp_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  term        estimate std.error statistic  p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)   2.53     0.380        6.65 5.97e-10
+2 lifeExp       0.0909   0.00558     16.3  4.12e-34</code></pre>
+</div>
+</div>
+<ol start="4" type="a">
 <li><p><strong>Model evaluation:</strong></p>
 <ul>
 <li><p>Calculate the R-squared of the model using two methods and confirm that the values match: first method is using <code>glance()</code> and the other method is based on the value of the correlation coefficient between the two variables.</p></li>
 <li><p>Interpret R-squared in the context of the data and the research question.</p></li>
 </ul></li>
 </ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(loggdp_model)<span class="sc">$</span>r.squared</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.654449</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>lingdp_model <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">|&gt;</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fit</span>(gdpPercap <span class="sc">~</span> lifeExp , <span class="at">data =</span> gapminder_07)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(lingdp_model)<span class="sc">$</span>r.squared</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4605827</code></pre>
+</div>
+</div>
+<p>A much higher percentage (65.4%) of the life expectancy is explained by loggdp when compared to just gdpPercap (46.1%).</p>
 </section>
 <section id="question-9" class="level2">
 <h2 class="anchored" data-anchor-id="question-9">Question 9</h2>
 <p>Next, we want to examine if the relationship between GDP and life expectancy that we observed in the previous exercise holds across all continents in our data. We’ll continue to work with logged GDP (<code>gdpPercap_log</code>) and data from 2007.</p>
 <ol type="a">
-<li><p><strong>Justification:</strong> Create a scatter plot of <code>gdpPercap_log</code> vs.&nbsp;<code>lifeExp</code>, where the points are colored by <code>continent</code>. Do you think the trend between <code>gdpPercap_log</code> and <code>lifeExp</code> is different for different continents? Justify your answer with specific features of the plot.</p></li>
+<li><strong>Justification:</strong> Create a scatter plot of <code>gdpPercap_log</code> vs.&nbsp;<code>lifeExp</code>, where the points are colored by <code>continent</code>. Do you think the trend between <code>gdpPercap_log</code> and <code>lifeExp</code> is different for different continents? Justify your answer with specific features of the plot.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>gapminder_07 <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">log</span>(gdpPercap),lifeExp, <span class="at">color =</span> continent)) <span class="sc">+</span> </span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-5_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>For the most part the trend appears to be homogeneous between continents, we can see for larger log(gdpPerCap’s) that are equated to very similar life capacities regardless of continent. However, there is one clear outlier, Africa where the trand is very different which we can see the number of outlines with large log gdp per capita but relatively small life expectancy.</p>
+<ol start="2" type="a">
 <li><p><strong>Model fitting and interpretation:</strong></p>
 <ul>
 <li><p>Regardless of your answer in part (a), fit an <u>additive model</u> (main effects) that predicts <code>gdpPercap_log</code> from life expectancy and continent (with Africas as the baseline level). Display a tidy summary of the model output.</p></li>
 <li><p>Interpret the <em>intercept</em> of the model, making sure that your interpretation is in the units of the original data (not on log scale).</p></li>
 <li><p>Interpret the <em>slope</em> of the model, making sure that your interpretation is in the units of the original data (not on log scale).</p></li>
 </ul></li>
-<li><p><strong>Prediction:</strong> Predict the GDP of a country in Asia where the average life expectancy is 70 years old.</p></li>
 </ol>
-</section>
-<section id="question-10" class="level2">
-<h2 class="anchored" data-anchor-id="question-10">Question 10</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>add_model <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">|&gt;</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="fu">log</span>(gdpPercap) <span class="sc">~</span> lifeExp <span class="sc">+</span> continent, <span class="at">data =</span> gapminder_07)</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(add_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+  term              estimate std.error statistic  p.value
+  &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)         3.20     0.499      6.42   2.11e- 9
+2 lifeExp             0.0781   0.00890    8.78   6.14e-15
+3 continentAmericas   0.0660   0.251      0.263  7.93e- 1
+4 continentAsia       0.0103   0.222      0.0463 9.63e- 1
+5 continentEurope     0.715    0.269      2.66   8.87e- 3
+6 continentOceania    0.779    0.601      1.30   1.97e- 1</code></pre>
+</div>
+</div>
+<p>The intercept of 3.2048 tells us the country with No life expectancy (0 Years) is likely to have a log GDP of 3.2048. 0.0781 tells us that there are is an increase of log GDP of 0.0781 for every year of life expectancy. For each continent we add their slope estimate when the country is in that continent.</p>
+<ol start="3" type="a">
+<li><strong>Prediction:</strong> Predict the GDP of a country in Asia where the average life expectancy is 70 years old.</li>
+</ol>
+<p>We do <span class="math display">\[3.20484 + 70 * (0.07812444) + 0.01028999\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fl">3.20484</span> <span class="sc">+</span> <span class="dv">70</span> <span class="sc">*</span> (<span class="fl">0.07812444</span>) <span class="sc">+</span> <span class="fl">0.01028999</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5906.689</code></pre>
+</div>
+</div>
+<p>So the GDP is $5906.689M Estimate. ## Question 10</p>
 <p>Communication is a critical yet often overlooked part of data science. When we engage with our audience and capture their interest, we can ultimately better communicate what we are trying to share.</p>
 <p>Please watch the following video: <a href="https://www.youtube.com/watch?v=Z8t4k0Q8e8Y">Hans Rosling: 200 years in 4 minutes</a>.</p>
 <p>Then, write a paragraph (4-5 sentences) addressing the following:</p>
@@ -545,6 +684,7 @@ Note
 <li><p>What are your general take-aways from this presentation?</p></li>
 <li><p>What are your general take-aways from how this presentation was given?</p></li>
 </ul>
+<p>Generally, a key take-away is that it is very important that you present data in a way that can be easily understood and is visually interesting. The animation is a highly interesting way and likely to encourage people to pay attention to the data. However, some aspects of the presentation are hard to follow as it moves very fast and it can hard to see with that background, it would likely be better if it was not shown in a real space but with solid background; also the scales are somewhat problematic. Furthermore, I believe that they were trying to show too many different things at once to follow.</p>
 </section>
 </section>
 <section id="wrap-up" class="level1">
